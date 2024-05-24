@@ -4,6 +4,15 @@ import moment from 'moment'
 import { cookies } from 'next/headers'
 import React from 'react'
 
+function handler(arr: any, key: string) {
+    let all = 0
+    for (let i = 0; i < arr.length; i++) {
+        all += arr[i].data[key];
+    }
+
+    return all
+}
+
 const page = async ({ params: { operatorLogin }, searchParams: { createdAt, updatedAt } }: { params: { operatorLogin: string }, searchParams: { createdAt: string, updatedAt: string } }) => {
     const token = cookies().get("zapAdminToken")?.value
     const reports = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/reports`, {
@@ -13,8 +22,6 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
             createdAt: { $gte: createdAt, $lt: updatedAt }
         }
     })
-
-    console.log(reports.data.data);
 
     return (
         <div className="h-screen bg-black overflow-auto px-3 py-5 text-white">
@@ -49,6 +56,16 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
                             </TableRow>
                         ))
                     }
+
+                    <TableRow className='border-none cursor-pointer border-t'>
+                        <TableCell className="rounded-l-lg">{handler(reports.data.data, "volume")}</TableCell>
+                        <TableCell></TableCell>
+                        <TableCell>{handler(reports.data.data, "price")}</TableCell>
+                        <TableCell></TableCell>
+                        <TableCell className='flex gap-2'></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell className='text-end rounded-r-lg'></TableCell>
+                    </TableRow>
                 </TableBody>
             </Table>
         </div>
