@@ -1,4 +1,3 @@
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import axios from 'axios'
 import moment from 'moment'
@@ -17,27 +16,27 @@ const page = async ({ params: { operatorLogin } }: { params: { operatorLogin: st
                 <TableHeader>
                     <TableRow className='border-b hover:bg-transparent select-none border-black/20'>
                         <TableHead className="w-[180px]">Время старта</TableHead>
-                        <TableHead>Время выхода</TableHead>
                         <TableHead>Посмотреть</TableHead>
+                        <TableHead>Время выхода</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody className='radius'>
                     {
                         sessions.data.data.map((i: any) => (
-                            <TableRow key={i.id} className='border-none cursor-pointer'>
-                                <TableCell className='rounded-l-lg'>
+                            <TableRow key={i.id} className='border-none cursor-pointer rounded-r-lg'>
+                                <TableCell className='rounded-l-lg flex gap-2'>
                                     <p>{moment(i.createdAt).format('DD.MM.YY')}</p>
-                                    <p>{moment(i.createdAt).format('HH.MM')}</p>
+                                    <p>{moment(i.createdAt).format('HH:mm')}</p>
                                 </TableCell>
                                 <TableCell className=''>
-                                    <p>{moment(i.updatedAt).format('DD.MM.YY')}</p>
-                                    <p>{moment(i.updatedAt).format('HH.MM')}</p>
-                                </TableCell>
-                                <TableCell className='rounded-r-lg'>
                                     <Link href={{
                                         pathname: `/admin/${operatorLogin}/${i._id}`,
                                         query: { createdAt: i.createdAt, updatedAt: i.updatedAt }
                                     }}>Посмотреть</Link>
+                                </TableCell>
+                                <TableCell className='flex gap-2 rounded-r-lg'>
+                                    <p>{moment(i.updatedAt).format('DD.MM.YY')}</p>
+                                    <p>{moment(i.updatedAt).format('HH:mm')}</p>
                                 </TableCell>
                             </TableRow>
                         ))
