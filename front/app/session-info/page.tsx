@@ -28,7 +28,7 @@ const Page = () => {
             if (res.status === 201 || res.status === 200) {
                 setInfo(res.data)
                 deleteAllCookies()
-                
+
             }
         }).catch(err => {
             push("log-in")
@@ -87,7 +87,7 @@ const Page = () => {
                                     <TableCell>{i.data.volume}</TableCell>
                                     <TableCell className="text-right flex justify-end gap-2">
                                         <p>{moment(i.createdAt).format('DD.MM.YY')}</p>
-                                        <p>{moment(i.createdAt).format('HH.MM')}</p>
+                                        <p>{moment(i.createdAt).format('HH:mm')}</p>
                                     </TableCell>
                                 </TableRow>
                             ))

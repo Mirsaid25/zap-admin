@@ -7,10 +7,11 @@ import React from 'react'
 function handler(arr: any, key: string) {
     let all = 0
     for (let i = 0; i < arr.length; i++) {
+        // console.log(arr[i].data[key]);
         all += arr[i].data[key];
     }
 
-    return all
+    return all?.toLocaleString()
 }
 
 const page = async ({ params: { operatorLogin }, searchParams: { createdAt, updatedAt } }: { params: { operatorLogin: string }, searchParams: { createdAt: string, updatedAt: string } }) => {
@@ -33,7 +34,7 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
                         <TableHead className="w-[100px]">Цена</TableHead>
                         <TableHead>Колонка</TableHead>
                         <TableHead>Время продажи</TableHead>
-                        <TableHead>сделал</TableHead>
+                        <TableHead>Действие</TableHead>
                         <TableHead className='text-end'>сделал</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -42,12 +43,12 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
                         reports.data.data.map((i: any) => (
                             <TableRow key={i.id} className='border-none cursor-pointer'>
                                 <TableCell className="rounded-l-lg">{i.data.volume}</TableCell>
-                                <TableCell>{i.data.autoNumber}</TableCell>
+                                <TableCell className='uppercase'>{i.data.autoNumber}</TableCell>
                                 <TableCell>{i.data.price}</TableCell>
                                 <TableCell>{i.data.column}</TableCell>
                                 <TableCell className='flex gap-2'>
                                     <p>{moment(i.createdAt).format('DD.MM.YY')}</p>
-                                    <p>{moment(i.createdAt).format('HH.MM')}</p>
+                                    <p>{moment(i.createdAt).format('hh:mm')}</p>
                                 </TableCell>
                                 <TableCell>{i.path}</TableCell>
                                 <TableCell className='text-end rounded-r-lg'>
@@ -58,9 +59,9 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
                     }
 
                     <TableRow className='border-none cursor-pointer border-t'>
-                        <TableCell className="rounded-l-lg">{handler(reports.data.data, "volume")}</TableCell>
+                        <TableCell className="rounded-l-lg">{handler(!reports.data.data[0].data.volume ? reports?.data?.data.slice(1) : reports?.data?.data, "volume")}</TableCell>
                         <TableCell></TableCell>
-                        <TableCell>{handler(reports.data.data, "price")}</TableCell>
+                        <TableCell>{handler(!reports.data.data[0].data.price ? reports?.data?.data.slice(1) : reports?.data?.data, "price")}</TableCell>
                         <TableCell></TableCell>
                         <TableCell className='flex gap-2'></TableCell>
                         <TableCell></TableCell>

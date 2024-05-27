@@ -1,13 +1,15 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import axios from 'axios'
 import moment from 'moment'
 import { cookies } from 'next/headers'
 import Link from 'next/link'
-import React from 'react'
 
-const page = async ({ params: { operatorLogin } }: { params: { operatorLogin: string } }) => {
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import PaginationCom from '@/components/PaginationCom'
+
+const page = async ({ searchParams, params: { operatorLogin } }: { params: { operatorLogin: string }, searchParams: any }) => {
     const token = cookies().get("zapAdminToke")?.value
-    const sessions = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sessions?operator.login=${operatorLogin}`, { headers: { Authorization: token } })
+    const sessions = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sessions?operator.login=${operatorLogin}`, { headers: { Authorization: token }, params: { $skip: 20 * (searchParams.page - 1) } })
+    const pgn = searchParams['page'] ?? 0
 
     return (
         <div className="h-screen bg-black overflow-auto px-3 py-5 text-white">
@@ -43,6 +45,8 @@ const page = async ({ params: { operatorLogin } }: { params: { operatorLogin: st
                     }
                 </TableBody>
             </Table>
+
+            <PaginationCom sessions={sessions.data.total} searchParams={searchParams} />
         </div>
     )
 }
