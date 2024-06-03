@@ -25,7 +25,7 @@ const Login: React.FC = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
     const [ISpandding, setISpandding] = useState(false);
     const { push } = useRouter()
-    const [role, setRole] = useState("");
+    const [role, setRole] = useState("operators");
     const [filedErr, setFiledErr] = useState("");
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
@@ -88,7 +88,7 @@ const Login: React.FC = () => {
                     </div>
                     <Select onValueChange={(e) => setRole(e)} >
                         <SelectTrigger id='role'>
-                            <SelectValue placeholder="Роль" />
+                            <SelectValue defaultValue={role} placeholder={role} />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="admins">Admin</SelectItem>

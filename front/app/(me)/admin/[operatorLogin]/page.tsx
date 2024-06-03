@@ -8,7 +8,7 @@ import PaginationCom from '@/components/PaginationCom'
 
 const page = async ({ searchParams, params: { operatorLogin } }: { params: { operatorLogin: string }, searchParams: any }) => {
     const token = cookies().get("zapAdminToke")?.value
-    const sessions = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sessions?operator.login=${operatorLogin}`, { headers: { Authorization: token }, params: { $skip: 20 * (searchParams.page - 1) } })
+    const sessions = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/sessions?operator.login=${operatorLogin}`, { headers: { Authorization: token }, params: { $skip: 20 * (searchParams.page - 1), $sort: { createdAt: -1 } } })
     const pgn = searchParams['page'] ?? 0
 
     return (

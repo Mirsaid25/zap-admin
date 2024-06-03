@@ -148,10 +148,9 @@ const Form = ({ token, role, operatorName, config }: any) => {
                             maxLength={8}
                             disabled={isPending}
                             onKeyUp={(e: any) => setSearch(e.target.value)}
-                            className={`py-5 uppercase text-xl bg-[#242424] text-white ${
-                                errors.autoNumber &&
+                            className={`py-5 uppercase text-xl bg-[#242424] text-white ${errors.autoNumber &&
                                 "border border-[red] outline-[red]"
-                            }`}
+                                }`}
                             {...register("autoNumber", { required: true })}
                         />
                         {!cars[0] ? (
@@ -237,7 +236,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                         <TableCell>
                                             {i.batteryPercent}
                                         </TableCell>
-                                        <TableCell>{i.bonus}</TableCell>
+                                        <TableCell>{i.bonus.toLocaleString("uz")}</TableCell>
                                         <TableCell>{i.phoneNumber}</TableCell>
                                         <TableCell className="text-right">
                                             {i.fullName}
@@ -265,9 +264,8 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                 {[0, 1, 2, 3, 4, 5, 6, 7].map((i: number) => (
                                     <li key={i}>
                                         <label
-                                            className={`radio-btn cursor-pointer ${
-                                                errors.column && "animate-pulse"
-                                            }`}
+                                            className={`radio-btn cursor-pointer ${errors.column && "animate-pulse"
+                                                }`}
                                         >
                                             <input
                                                 disabled={isPending}
@@ -286,9 +284,8 @@ const Form = ({ token, role, operatorName, config }: any) => {
                             </ul>
                             <div className="grid grid-cols-1 gap-2">
                                 <label
-                                    className={`radio-btn cursor-pointer ${
-                                        errors.isTaxi && "animate-pulse"
-                                    }`}
+                                    className={`radio-btn cursor-pointer ${errors.isTaxi && "animate-pulse"
+                                        }`}
                                 >
                                     <input
                                         disabled={isPending}
@@ -297,16 +294,14 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                         {...register("isTaxi", {
                                             required: true,
                                         })}
-                                        className={`hidden-radio ${
-                                            errors.isTaxi && "animate-pulse"
-                                        }`}
+                                        className={`hidden-radio ${errors.isTaxi && "animate-pulse"
+                                            }`}
                                     />
                                     <span>Такси</span>
                                 </label>
                                 <label
-                                    className={`radio-btn cursor-pointer ${
-                                        errors.isTaxi && "animate-pulse"
-                                    }`}
+                                    className={`radio-btn cursor-pointer ${errors.isTaxi && "animate-pulse"
+                                        }`}
                                 >
                                     <input
                                         disabled={isPending}
@@ -315,16 +310,14 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                         {...register("isTaxi", {
                                             required: true,
                                         })}
-                                        className={`hidden-radio ${
-                                            errors.isTaxi && "animate-pulse"
-                                        }`}
+                                        className={`hidden-radio ${errors.isTaxi && "animate-pulse"
+                                            }`}
                                     />
                                     <span>Грузовые</span>
                                 </label>
                                 <label
-                                    className={`radio-btn cursor-pointer ${
-                                        errors.isTaxi && "animate-pulse"
-                                    }`}
+                                    className={`radio-btn cursor-pointer ${errors.isTaxi && "animate-pulse"
+                                        }`}
                                 >
                                     <input
                                         disabled={isPending}
@@ -333,9 +326,8 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                         {...register("isTaxi", {
                                             required: true,
                                         })}
-                                        className={`hidden-radio ${
-                                            errors.isTaxi && "animate-pulse"
-                                        }`}
+                                        className={`hidden-radio ${errors.isTaxi && "animate-pulse"
+                                            }`}
                                     />
                                     <span>Обычная</span>
                                 </label>
@@ -350,10 +342,9 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                         {...register("volume", {
                                             required: true,
                                         })}
-                                        className={`w-full h-full text-2xl px-5 bg-[#242424] text-white ${
-                                            errors.price &&
+                                        className={`w-full h-full text-2xl px-5 bg-[#242424] text-white ${errors.price &&
                                             "border-[red] outline-[red]"
-                                        }`}
+                                            }`}
                                         placeholder="Kub"
                                         disabled={isPending}
                                         defaultValue={changeKub}
@@ -378,7 +369,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                     />
                                 </div>
                                 <div className="h-fit w-full mt-5">
-                                    <p>bonus: {bonus}</p>
+                                    <p>bonus: {bonus.toLocaleString('uz')}</p>
                                     <div className="grid grid-cols-2 gap-3 h-fit items-center justify-between mt-2">
                                         <Button
                                             disabled={isPending}
@@ -388,7 +379,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                             type="submit"
                                             className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-1"
                                         >
-                                            {changePrice.toLocaleString()} налом
+                                            {changePrice.toLocaleString("uz")} cум
                                         </Button>
                                         <Button
                                             disabled={isPending || bonus == 0}
@@ -402,9 +393,9 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                                 {bon.toLocaleString()} с бонуса
                                             </p> */}
                                             <p>
-                                                {nal.toLocaleString()}{" "}
+                                                {nal.toLocaleString("uz")}
                                                 {changePrice > bonus
-                                                    ? "нал"
+                                                    ? "cум"
                                                     : ""}
                                             </p>
                                         </Button>

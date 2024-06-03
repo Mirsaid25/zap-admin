@@ -24,12 +24,14 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
         }
     })
 
+    console.log(reports.data.data);
+
     return (
-        <div className="h-screen bg-black overflow-auto px-3 py-5 text-white">
-            <Table>
+        <div className="h-screen relative bg-black overflow-auto px-3 py-5 pb-28 text-white">
+            <Table className='h-full'>
                 <TableHeader>
                     <TableRow className='border-b hover:bg-transparent select-none border-white/20'>
-                        <TableHead className="w-[100px]">Куб</TableHead>
+                        <TableHead className="w-[150px]">Куб</TableHead>
                         <TableHead className="w-[200px]">Номер машины</TableHead>
                         <TableHead className="w-[100px]">Цена</TableHead>
                         <TableHead>Колонка</TableHead>
@@ -38,37 +40,55 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
                         <TableHead className='text-end'>сделал</TableHead>
                     </TableRow>
                 </TableHeader>
+
                 <TableBody className='radius'>
                     {
                         reports.data.data.map((i: any) => (
                             <TableRow key={i.id} className='border-none cursor-pointer'>
-                                <TableCell className="rounded-l-lg">{i.data.volume}</TableCell>
-                                <TableCell className='uppercase'>{i.data.autoNumber}</TableCell>
-                                <TableCell>{i.data.price}</TableCell>
-                                <TableCell>{i.data.column}</TableCell>
+                                <TableCell className="rounded-l-lg">{i?.data?.volume}</TableCell>
+                                <TableCell className='uppercase'>{i?.data?.autoNumber}</TableCell>
+                                <TableCell>{i?.data?.price.toLocaleString("uz")}</TableCell>
+                                <TableCell>{i?.data?.column}</TableCell>
                                 <TableCell className='flex gap-2'>
-                                    <p>{moment(i.createdAt).format('DD.MM.YY')}</p>
-                                    <p>{moment(i.createdAt).format('hh:mm')}</p>
+                                    <p>{moment(i?.createdAt).format('DD.MM.YY')}</p>
+                                    <p>{moment(i?.createdAt).format('hh:mm')}</p>
                                 </TableCell>
-                                <TableCell>{i.path}</TableCell>
+                                <TableCell>{i?.path}</TableCell>
                                 <TableCell className='text-end rounded-r-lg'>
-                                    {i.method === 0 ? "Создал" : i.method === 1 ? "Изменил" : "Удалил"}
+                                    {i?.method === 0 ? "Создал" : i?.method === 1 ? "Изменил" : "Удалил"}
                                 </TableCell>
                             </TableRow>
                         ))
                     }
-
-                    <TableRow className='border-none cursor-pointer border-t'>
-                        <TableCell className="rounded-l-lg">{handler(!reports.data.data[0].data.volume ? reports?.data?.data.slice(1) : reports?.data?.data, "volume")}</TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>{handler(!reports.data.data[0].data.price ? reports?.data?.data.slice(1) : reports?.data?.data, "price")}</TableCell>
-                        <TableCell></TableCell>
-                        <TableCell className='flex gap-2'></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell className='text-end rounded-r-lg'></TableCell>
-                    </TableRow>
                 </TableBody>
             </Table>
+
+            <div className="fixed bottom-0 left-0 w-full bg-black">
+                <Table>
+                    <TableHeader>
+                        <TableRow className='border-b hover:bg-transparent select-none border-white/20'>
+                            <TableHead className="w-[150px]">Куб</TableHead>
+                            <TableHead className="w-[200px]"></TableHead>
+                            <TableHead className="w-[100px]">Цена</TableHead>
+                            <TableHead></TableHead>
+                            <TableHead></TableHead>
+                            <TableHead></TableHead>
+                            <TableHead className='text-end'></TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow className='border-none border-t hover:bg-transparent'>
+                            <TableCell className="rounded-l-lg">{handler(!reports?.data?.data[0]?.data?.volume ? reports?.data?.data.slice(1) : reports?.data?.data, "volume")}</TableCell>
+                            <TableCell></TableCell>
+                            <TableCell>{handler(!reports?.data?.data[0]?.data?.price ? reports?.data?.data.slice(1) : reports?.data?.data, "price")}</TableCell>
+                            <TableCell></TableCell>
+                            <TableCell className='flex gap-2'></TableCell>
+                            <TableCell></TableCell>
+                            <TableCell className='text-end rounded-r-lg'></TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </div>
         </div>
     )
 }

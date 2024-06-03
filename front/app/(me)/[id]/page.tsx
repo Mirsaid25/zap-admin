@@ -27,7 +27,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                     <TableRow className='border-none cursor-pointer'>
                         <TableCell className="font-medium uppercase rounded-l-lg">{car.data.autoNumber}</TableCell>
                         <TableCell>{car.data.batteryPercent}</TableCell>
-                        <TableCell>{car.data.bonus}</TableCell>
+                        <TableCell>{car.data.bonus.toLocaleString("uz")}</TableCell>
                         <TableCell>{car.data.phoneNumber}</TableCell>
                         <TableCell className="text-right rounded-r-lg">{car.data.fullName}</TableCell>
                     </TableRow>
@@ -53,11 +53,11 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                             <TableRow key={el._id} className='border-none cursor-pointer'>
                                 <TableCell className="font-medium rounded-l-lg">{moment(car.data.history.createdAt).format('DD.MM.YY')}</TableCell>
                                 <TableCell>{el.volume}</TableCell>
-                                <TableCell>{el.volumePrice}</TableCell>
-                                <TableCell>{el.price}</TableCell>
-                                <TableCell>{el.bonusPercent}</TableCell>
-                                <TableCell>{el.bonusPricePerPurchase}</TableCell>
-                                <TableCell>{el.bonusPrice}</TableCell>
+                                <TableCell>{el.volumePrice.toLocaleString("uz")}</TableCell>
+                                <TableCell>{el.price.toLocaleString("uz")}</TableCell>
+                                <TableCell>{el.bonusPercent.toLocaleString("uz")}</TableCell>
+                                <TableCell>{el.bonusPricePerPurchase.toLocaleString("uz")}</TableCell>
+                                <TableCell>{el.bonusPrice.toLocaleString("uz")}</TableCell>
                                 <TableCell className="text-right rounded-r-lg">{el.allVolume}</TableCell>
                             </TableRow>
                         ))
