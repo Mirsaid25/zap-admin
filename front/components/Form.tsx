@@ -34,10 +34,8 @@ type Inputs = {
 };
 
 const formSchema = z.object({
-    volume: z.string(),
     price: z.string(),
     autoNumber: z.string().min(8).max(8),
-    column: z.string(),
     isTaxi: z.string(),
 });
 
@@ -58,24 +56,34 @@ const Form = ({ token, role, operatorName, config }: any) => {
     const [payWithBonus, setPayWithBonus] = useState(false);
     const [closeSession, setCloseSession] = useState(false);
     const [adminExit, setAdminExit] = useState(false);
-
     const [handleUpdata, setHandleUpdata] = useState(false);
+    const [mKub, setMKub] = useState(config.price);
 
-    const bon =
-        changeKub && bonus !== 0
-            ? bonus > changePrice
-                ? changePrice
-                : bonus
-            : "0";
     const nal = changePrice > bonus ? changePrice - bonus : changePrice;
+    console.log(role);
+
+    const handleClick = () => {
+        console.log(mKub, "kub");
+        // axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/config`, { price: mKub }, { headers: { Authorization: token } })
+        //     .then((res) => console.log(res.data))
+
+        axios(`${process.env.NEXT_PUBLIC_API_URL}/config/${config._id}`, {
+            method: 'PATCH',
+            headers: {
+                Authorization: token, // Предполагается использование Bearer токена
+                'Content-Type': 'application/json', // Если отправляете JSON данные
+            },
+            data: {
+                price: mKub
+            },
+        })
+    }
 
     function onSubmit(data: z.infer<typeof formSchema>) {
         setIsPending(true);
         const sendData = {
             ...data,
             autoNumber: data.autoNumber.toUpperCase(),
-            volume: Number(data.volume),
-            column: Number(data.column),
             price: changePrice,
             isTaxi: data.isTaxi === "1",
             useBonus: payWithBonus,
@@ -193,26 +201,26 @@ const Form = ({ token, role, operatorName, config }: any) => {
                 </div>
 
                 <ResizablePanelGroup
-                    direction="vertical"
+                    direction="horizontal"
                     className="mt-3 text-white"
                 >
-                    <ResizablePanel className="scroll h-fit p-4 mb-4 rounded-lg bg-[#121212]">
+                    <ResizablePanel className="scroll h-full rounded-lg mr-4 bg-[#121212]">
                         <Table>
                             <TableHeader>
                                 <TableRow className="border-b hover:bg-transparent select-none border-white/20">
-                                    <TableHead className="w-[100px] text-center">
+                                    <TableHead className="w-[40px] text-center text-nowrap">
                                         numbers
                                     </TableHead>
-                                    <TableHead className="w-[180px]">
+                                    <TableHead className="w-[150px] text-nowrap">
                                         Номер машины
                                     </TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Сумма бонуса</TableHead>
-                                    <TableHead>Номер</TableHead>
-                                    <TableHead className="text-right">
+                                    <TableHead className="text-center text-nowrap">Status</TableHead>
+                                    <TableHead className="text-nowrap">Сумма бонуса</TableHead>
+                                    <TableHead className="text-nowrap">Номер</TableHead>
+                                    <TableHead className="text-right text-nowrap">
                                         Имя
                                     </TableHead>
-                                    <TableHead className="text-right">
+                                    <TableHead className="text-right text-nowrap">
                                         История
                                     </TableHead>
                                 </TableRow>
@@ -227,21 +235,21 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                         }}
                                         className="border-none cursor-pointer"
                                     >
-                                        <TableCell className="font-medium text-center rounded-l-lg">
+                                        <TableCell className="font-medium text-center rounded-l-lg text-nowrap">
                                             {idx + 1}
                                         </TableCell>
-                                        <TableCell className="font-medium uppercase">
+                                        <TableCell className="font-medium uppercase text-nowrap">
                                             {i.autoNumber}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="text-center text-nowrap">
                                             {i.batteryPercent}
                                         </TableCell>
-                                        <TableCell>{i.bonus.toLocaleString("uz")}</TableCell>
-                                        <TableCell>{i.phoneNumber}</TableCell>
-                                        <TableCell className="text-right">
+                                        <TableCell className="text-nowrap">{i.bonus.toLocaleString("uz")}</TableCell>
+                                        <TableCell className="text-nowrap">{i.phoneNumber}</TableCell>
+                                        <TableCell className="text-right text-nowrap">
                                             {i.fullName}
                                         </TableCell>
-                                        <TableCell className="text-right rounded-r-lg">
+                                        <TableCell className="text-right rounded-r-lg text-nowrap">
                                             <Link
                                                 href={`/${i._id}`}
                                                 type="button"
@@ -258,82 +266,10 @@ const Form = ({ token, role, operatorName, config }: any) => {
                         </Table>
                     </ResizablePanel>
                     <ResizableHandle withHandle />
-                    <ResizablePanel className="h-full pb-8 px-5 mt-4 rounded-lg bg-[#121212]">
-                        <div className="h-full grid grid-cols-3 gap-5 mt-5">
-                            <ul className="grid grid-cols-2 gap-2">
-                                {[0, 1, 2, 3, 4, 5, 6, 7].map((i: number) => (
-                                    <li key={i}>
-                                        <label
-                                            className={`radio-btn cursor-pointer ${errors.column && "animate-pulse"
-                                                }`}
-                                        >
-                                            <input
-                                                disabled={isPending}
-                                                type="radio"
-                                                {...register("column", {
-                                                    required: true,
-                                                })}
-                                                name="column"
-                                                value={i + 1}
-                                                className="hidden-radio"
-                                            />
-                                            <span>{i + 1}</span>
-                                        </label>
-                                    </li>
-                                ))}
-                            </ul>
-                            <div className="grid grid-cols-1 gap-2">
-                                <label
-                                    className={`radio-btn cursor-pointer ${errors.isTaxi && "animate-pulse"
-                                        }`}
-                                >
-                                    <input
-                                        disabled={isPending}
-                                        value={"1"}
-                                        type="radio"
-                                        {...register("isTaxi", {
-                                            required: true,
-                                        })}
-                                        className={`hidden-radio ${errors.isTaxi && "animate-pulse"
-                                            }`}
-                                    />
-                                    <span>Такси</span>
-                                </label>
-                                <label
-                                    className={`radio-btn cursor-pointer ${errors.isTaxi && "animate-pulse"
-                                        }`}
-                                >
-                                    <input
-                                        disabled={isPending}
-                                        value={"1"}
-                                        type="radio"
-                                        {...register("isTaxi", {
-                                            required: true,
-                                        })}
-                                        className={`hidden-radio ${errors.isTaxi && "animate-pulse"
-                                            }`}
-                                    />
-                                    <span>Грузовые</span>
-                                </label>
-                                <label
-                                    className={`radio-btn cursor-pointer ${errors.isTaxi && "animate-pulse"
-                                        }`}
-                                >
-                                    <input
-                                        disabled={isPending}
-                                        value={"0"}
-                                        type="radio"
-                                        {...register("isTaxi", {
-                                            required: true,
-                                        })}
-                                        className={`hidden-radio ${errors.isTaxi && "animate-pulse"
-                                            }`}
-                                    />
-                                    <span>Обычная</span>
-                                </label>
-                            </div>
+                    <ResizablePanel defaultSize={35} className="h-full rounded-lg ml-4 bg-[#121212]">
+                        <div className="h-full p-5">
                             <div className="flex flex-col">
-                                <div className="flex flex-col gap-2 h-[55%]">
+                                <div className="flex flex-col gap-2">
                                     <Input
                                         type="number"
                                         onKeyUpCapture={(e: any) =>
@@ -349,13 +285,30 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                         disabled={isPending}
                                         defaultValue={changeKub}
                                     />
-
-                                    <Input
-                                        className="w-full h-full text-2xl px-5 bg-[#242424] text-white"
-                                        type="text"
-                                        value={config.price}
-                                        placeholder="Sum"
-                                    />
+                                    <div className="relative">
+                                        {
+                                            role === "admin" ?
+                                                <Input
+                                                    className="w-full h-full text-2xl px-5 bg-[#242424] text-white"
+                                                    type="text"
+                                                    onChange={(e) => setMKub(+e.target.value)}
+                                                    defaultValue={config.price}
+                                                    placeholder="Sum"
+                                                />
+                                                :
+                                                <Input
+                                                    className="w-full h-full text-2xl px-5 bg-[#242424] text-white"
+                                                    type="text"
+                                                    value={config.price}
+                                                    placeholder="Sum"
+                                                />
+                                        }
+                                        {
+                                            role === "admin" ?
+                                                <Button onClick={handleClick} type="button" className="absolute top-[3px] right-1 text-sm py-0.5 px-2 bg-green-700 hover:bg-green-600">Сохранить</Button>
+                                                : null
+                                        }
+                                    </div>
 
                                     <Input
                                         className="w-full h-full text-2xl px-5 bg-[#242424] text-white"
@@ -370,7 +323,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                 </div>
                                 <div className="h-fit w-full mt-5">
                                     <p>bonus: {bonus.toLocaleString('uz')}</p>
-                                    <div className="grid grid-cols-2 gap-3 h-fit items-center justify-between mt-2">
+                                    <div className="grid grid-cols-1 gap-3 h-fit items-center justify-between mt-2">
                                         <Button
                                             disabled={isPending}
                                             onClick={() =>
@@ -387,12 +340,9 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                                 setPayWithBonus(true)
                                             }
                                             type="submit"
-                                            className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-2 flex flex-col items-start"
+                                            className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-2 flex flex-col items-center"
                                         >
-                                            {/* <p>
-                                                {bon.toLocaleString()} с бонуса
-                                            </p> */}
-                                            <p>
+                                            <p className="text-center">
                                                 {nal.toLocaleString("uz")}
                                                 {changePrice > bonus
                                                     ? "cум"
