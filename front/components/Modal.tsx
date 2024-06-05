@@ -48,13 +48,13 @@ const typesButtonArr = [
     }
 ]
 
-const Modal = ({ setOpenModal, token }: any) => {
+const Modal = ({ setOpenModal, token, search }: any) => {
     const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            autoNumber: "",
+            autoNumber: search,
             fullName: "",
             phoneNumber: "",
             type: ""

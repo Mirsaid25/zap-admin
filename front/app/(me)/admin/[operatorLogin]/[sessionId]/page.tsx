@@ -11,7 +11,7 @@ function handler(arr: any, key: string) {
         all += arr[i].data[key];
     }
 
-    return all?.toLocaleString()
+    return Math.ceil(all).toLocaleString("uz")
 }
 
 const page = async ({ params: { operatorLogin }, searchParams: { createdAt, updatedAt } }: { params: { operatorLogin: string }, searchParams: { createdAt: string, updatedAt: string } }) => {
@@ -34,7 +34,6 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
                         <TableHead className="w-[150px]">Куб</TableHead>
                         <TableHead className="w-[200px]">Номер машины</TableHead>
                         <TableHead className="w-[100px]">Цена</TableHead>
-                        <TableHead>Колонка</TableHead>
                         <TableHead>Время продажи</TableHead>
                         <TableHead>Действие</TableHead>
                         <TableHead className='text-end'>сделал</TableHead>
@@ -47,8 +46,7 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
                             <TableRow key={i.id} className='border-none cursor-pointer'>
                                 <TableCell className="rounded-l-lg">{i?.data?.volume}</TableCell>
                                 <TableCell className='uppercase'>{i?.data?.autoNumber}</TableCell>
-                                <TableCell>{i?.data?.price.toLocaleString("uz")}</TableCell>
-                                <TableCell>{i?.data?.column}</TableCell>
+                                <TableCell>{Math.ceil(i?.data?.price).toLocaleString("uz")}</TableCell>
                                 <TableCell className='flex gap-2'>
                                     <p>{moment(i?.createdAt).format('DD.MM.YY')}</p>
                                     <p>{moment(i?.createdAt).format('hh:mm')}</p>

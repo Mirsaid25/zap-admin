@@ -58,9 +58,10 @@ const Form = ({ token, role, operatorName, config }: any) => {
     const [adminExit, setAdminExit] = useState(false);
     const [handleUpdata, setHandleUpdata] = useState(false);
     const [mKub, setMKub] = useState(config.price);
+    const [carNumber, setCarNumber] = useState("");
+    console.log(search);
 
     const nal = changePrice > bonus ? changePrice - bonus : changePrice;
-    console.log(role);
 
     const handleClick = () => {
         console.log(mKub, "kub");
@@ -139,7 +140,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
 
     return (
         <div className="px-3 h-screen pt-3 pb-5 w-full flex flex-col bg-black">
-            {openModal && <Modal setOpenModal={setOpenModal} token={token} />}
+            {openModal && <Modal setOpenModal={setOpenModal} token={token} search={search} />}
             {closeSession && <ModalSession setCloseSession={setCloseSession} />}
             {adminExit && <ExitModul setAdminExit={setAdminExit} />}
             <form
@@ -155,6 +156,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
                             autoComplete="off"
                             maxLength={8}
                             disabled={isPending}
+                            defaultValue={search}
                             onKeyUp={(e: any) => setSearch(e.target.value)}
                             className={`py-5 uppercase text-xl bg-[#242424] text-white ${errors.autoNumber &&
                                 "border border-[red] outline-[red]"
@@ -231,9 +233,11 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                         key={idx}
                                         onClick={() => {
                                             reset({ autoNumber: i.autoNumber }),
-                                                setBonus(i.bonus);
+                                                setBonus(i.bonus),
+                                                setCarNumber(i.autoNumber),
+                                                setSearch(i.autoNumber)
                                         }}
-                                        className="border-none cursor-pointer"
+                                        className={`border-none cursor-pointer ${search.toLocaleUpperCase() === i.autoNumber ? "bg-[#828486]" : ""}`}
                                     >
                                         <TableCell className="font-medium text-center rounded-l-lg text-nowrap">
                                             {idx + 1}
@@ -244,7 +248,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                         <TableCell className="text-center text-nowrap">
                                             {i.batteryPercent}
                                         </TableCell>
-                                        <TableCell className="text-nowrap">{i.bonus.toLocaleString("uz")}</TableCell>
+                                        <TableCell className="text-nowrap">{Math.ceil(i.bonus).toLocaleString("uz")}</TableCell>
                                         <TableCell className="text-nowrap">{i.phoneNumber}</TableCell>
                                         <TableCell className="text-right text-nowrap">
                                             {i.fullName}
@@ -285,6 +289,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                         disabled={isPending}
                                         defaultValue={changeKub}
                                     />
+
                                     <div className="relative">
                                         {
                                             role === "admin" ?
@@ -318,11 +323,11 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                             required: true,
                                         })}
                                         placeholder="Sum"
-                                        value={changePrice}
+                                        value={Math.ceil(changePrice)}
                                     />
                                 </div>
                                 <div className="h-fit w-full mt-5">
-                                    <p>bonus: {bonus.toLocaleString('uz')}</p>
+                                    <p>bonus: {Math.ceil(bonus).toLocaleString('uz')}</p>
                                     <div className="grid grid-cols-1 gap-3 h-fit items-center justify-between mt-2">
                                         <Button
                                             disabled={isPending}
@@ -332,7 +337,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                             type="submit"
                                             className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-1"
                                         >
-                                            {changePrice.toLocaleString("uz")} cум
+                                            {Math.ceil(changePrice).toLocaleString("uz")} cум
                                         </Button>
                                         <Button
                                             disabled={isPending || bonus == 0}
@@ -343,10 +348,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                             className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-2 flex flex-col items-center"
                                         >
                                             <p className="text-center">
-                                                {nal.toLocaleString("uz")}
-                                                {changePrice > bonus
-                                                    ? "cум"
-                                                    : ""}
+                                                {Math.ceil(nal).toLocaleString("uz")} сум
                                             </p>
                                         </Button>
                                     </div>
