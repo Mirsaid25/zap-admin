@@ -65,7 +65,6 @@ const Login: React.FC = () => {
                 }
             }).catch(err => {
                 setISpandding(false)
-                // console.log(err.response.data.message);
 
                 setFiledErr(err.response.data.message)
                 console.log(err)

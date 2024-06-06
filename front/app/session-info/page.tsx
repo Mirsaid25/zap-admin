@@ -13,10 +13,7 @@ const Page = () => {
     const createdAt = getCookie("createdAt")
     const updatedAt = getCookie("updatedAt")
     const token: any = getCookie("zapAdminToken");
-
     const { push } = useRouter()
-
-
     const [info, setInfo] = useState<any>()
 
     useEffect(() => {
@@ -28,18 +25,15 @@ const Page = () => {
             if (res.status === 201 || res.status === 200) {
                 setInfo(res.data)
                 deleteAllCookies()
-
             }
         }).catch(err => {
             push("log-in")
         })
     }, [])
 
-
     if (!info) {
         return null
     }
-
 
     return (
         <div className='h-screen w-full z-50'>

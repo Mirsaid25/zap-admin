@@ -8,7 +8,7 @@ function handler(arr: any, key: string) {
     let all = 0
     for (let i = 0; i < arr.length; i++) {
         // console.log(arr[i].data[key]);
-        all += arr[i].data[key];
+        all += +arr[i].data[key];
     }
 
     return Math.ceil(all).toLocaleString("uz")
@@ -23,8 +23,7 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
             createdAt: { $gte: createdAt, $lt: updatedAt }
         }
     })
-
-    console.log(reports.data.data);
+    console.log(reports?.data?.data);
 
     return (
         <div className="h-screen relative bg-black overflow-auto px-3 py-5 pb-28 text-white">

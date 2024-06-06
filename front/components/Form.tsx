@@ -23,7 +23,7 @@ import axios from "axios";
 import Link from "next/link";
 import ModalSession from "./ModalSession";
 import ExitModul from "./ExitModul";
-import action from "@/actions/action";
+import moment, { now } from "moment";
 
 type Inputs = {
     autoNumber: string;
@@ -39,7 +39,7 @@ const formSchema = z.object({
     isTaxi: z.string(),
 });
 
-const Form = ({ token, role, operatorName, config }: any) => {
+const Form = ({ token, role, operatorName, config, createdAt, operatorLogin }: any) => {
     const {
         register,
         handleSubmit,
@@ -58,21 +58,17 @@ const Form = ({ token, role, operatorName, config }: any) => {
     const [adminExit, setAdminExit] = useState(false);
     const [handleUpdata, setHandleUpdata] = useState(false);
     const [mKub, setMKub] = useState(config.price);
-    const [carNumber, setCarNumber] = useState("");
-    console.log(search);
+    const [sessions, setSessions] = useState<any>([]);
 
     const nal = changePrice > bonus ? changePrice - bonus : changePrice;
 
     const handleClick = () => {
         console.log(mKub, "kub");
-        // axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/config`, { price: mKub }, { headers: { Authorization: token } })
-        //     .then((res) => console.log(res.data))
-
         axios(`${process.env.NEXT_PUBLIC_API_URL}/config/${config._id}`, {
             method: 'PATCH',
             headers: {
-                Authorization: token, // Предполагается использование Bearer токена
-                'Content-Type': 'application/json', // Если отправляете JSON данные
+                Authorization: token,
+                'Content-Type': 'application/json',
             },
             data: {
                 price: mKub
@@ -85,6 +81,8 @@ const Form = ({ token, role, operatorName, config }: any) => {
         const sendData = {
             ...data,
             autoNumber: data.autoNumber.toUpperCase(),
+            column: 1,
+            type: 1,
             price: changePrice,
             isTaxi: data.isTaxi === "1",
             useBonus: payWithBonus,
@@ -105,33 +103,51 @@ const Form = ({ token, role, operatorName, config }: any) => {
                     });
                     setChangeKub(0);
                     setChangePrice(0);
-                    setBonus(0);
-                    setIsPending(false);
+                    setBonus(0)
+                    setIsPending(false)
                     setHandleUpdata(!handleUpdata)
                 }
             });
     }
 
     useEffect(() => {
-        axios
-            .get(`${process.env.NEXT_PUBLIC_API_URL}/cars`, {
-                headers: {
-                    Authorization: token,
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cars`, {
+            headers: {
+                Authorization: token,
+            },
+            params: {
+                autoNumber: {
+                    $regex: search,
+                    $options: "i",
                 },
-                params: {
-                    autoNumber: {
-                        $regex: search,
-                        $options: "i",
-                    },
-                },
-            })
-            .then((res) => {
-                if (res.status === 200 || res.status === 201) {
-                    setCars(res.data.data);
-                    console.log(res);
-                }
-            });
+            },
+        }).then((res) => {
+            if (res.status === 200 || res.status === 201) {
+                setCars(res.data.data);
+            }
+        });
     }, [search, handleUpdata]);
+
+    useEffect(() => {
+        const updatedAt = new Date().toISOString();
+        if (role !== "admin") {
+            axios.get(`${process.env.NEXT_PUBLIC_API_URL}/reports?operator.login=${operatorLogin}&createdAt[$gte]=${createdAt}&updatedAt[$lt]=${updatedAt}`, {
+                headers: {
+                    Authorization: token
+                }
+            }).then((res) => {
+                if (res.status === 201 || res.status === 200) {
+                    // console.log(res.data);
+                    setSessions(res.data.data)
+                }
+            })
+        } else {
+            setSessions([])
+        }
+    }, [search])
+    // console.log(sessions);
+    // console.log(cars);
+    console.log(role);
 
     function changeKubFn(v: number) {
         setChangeKub(v);
@@ -206,68 +222,97 @@ const Form = ({ token, role, operatorName, config }: any) => {
                     direction="horizontal"
                     className="mt-3 text-white"
                 >
-                    <ResizablePanel className="scroll h-full rounded-lg mr-4 bg-[#121212]">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="border-b hover:bg-transparent select-none border-white/20">
-                                    <TableHead className="w-[40px] text-center text-nowrap">
-                                        numbers
-                                    </TableHead>
-                                    <TableHead className="w-[150px] text-nowrap">
-                                        Номер машины
-                                    </TableHead>
-                                    <TableHead className="text-center text-nowrap">Status</TableHead>
-                                    <TableHead className="text-nowrap">Сумма бонуса</TableHead>
-                                    <TableHead className="text-nowrap">Номер</TableHead>
-                                    <TableHead className="text-right text-nowrap">
-                                        Имя
-                                    </TableHead>
-                                    <TableHead className="text-right text-nowrap">
-                                        История
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody className="radius">
-                                {cars.map((i: any, idx: number) => (
-                                    <TableRow
-                                        key={idx}
-                                        onClick={() => {
-                                            reset({ autoNumber: i.autoNumber }),
-                                                setBonus(i.bonus),
-                                                setCarNumber(i.autoNumber),
-                                                setSearch(i.autoNumber)
-                                        }}
-                                        className={`border-none cursor-pointer ${search.toLocaleUpperCase() === i.autoNumber ? "bg-[#828486]" : ""}`}
-                                    >
-                                        <TableCell className="font-medium text-center rounded-l-lg text-nowrap">
-                                            {idx + 1}
-                                        </TableCell>
-                                        <TableCell className="font-medium uppercase text-nowrap">
-                                            {i.autoNumber}
-                                        </TableCell>
-                                        <TableCell className="text-center text-nowrap">
-                                            {i.batteryPercent}
-                                        </TableCell>
-                                        <TableCell className="text-nowrap">{Math.ceil(i.bonus).toLocaleString("uz")}</TableCell>
-                                        <TableCell className="text-nowrap">{i.phoneNumber}</TableCell>
-                                        <TableCell className="text-right text-nowrap">
-                                            {i.fullName}
-                                        </TableCell>
-                                        <TableCell className="text-right rounded-r-lg text-nowrap">
-                                            <Link
-                                                href={`/${i._id}`}
-                                                type="button"
-                                                onClick={(e) =>
-                                                    e.stopPropagation()
-                                                }
+                    <ResizablePanel className="scroll h-full rounded-lg mr-4 p-5 pt-3 bg-[#121212]">
+                        {
+                            !search.length && role !== "admin" ?
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow className='border-b hover:bg-transparent select-none border-black/20'>
+                                            <TableHead className="w-[100px] text-center">Действие</TableHead>
+                                            <TableHead className="w-[180px]">Номер машины</TableHead>
+                                            <TableHead>Сумма продажи</TableHead>
+                                            <TableHead>Куб</TableHead>
+                                            <TableHead className="text-right">Время продажи</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody className='radius'>
+                                        {
+                                            sessions.map((i: any) => (
+                                                <TableRow key={i.id} className='border-none cursor-pointer'>
+                                                    <TableCell className="font-medium text-center rounded-l-lg">{i.path}</TableCell>
+                                                    <TableCell className="font-medium uppercase">{i.data.autoNumber}</TableCell>
+                                                    <TableCell>{Math.ceil(i.data.price).toLocaleString("uz")}</TableCell>
+                                                    <TableCell>{i.data.volume}</TableCell>
+                                                    <TableCell className="text-right flex justify-end gap-2">
+                                                        <p>{moment(i.createdAt).format('DD.MM.YY')}</p>
+                                                        <p>{moment(i.createdAt).format('HH:mm')}</p>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        }
+                                    </TableBody>
+                                </Table> :
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow className="border-b hover:bg-transparent select-none border-white/20">
+                                            <TableHead className="w-[20px] text-center text-nowrap">
+                                                №
+                                            </TableHead>
+                                            <TableHead className="w-[150px] text-nowrap">
+                                                Номер машины
+                                            </TableHead>
+                                            <TableHead className="text-center text-nowrap">Status</TableHead>
+                                            <TableHead className="text-nowrap">Сумма бонуса</TableHead>
+                                            <TableHead className="text-nowrap">Номер</TableHead>
+                                            <TableHead className="text-right text-nowrap">
+                                                Имя
+                                            </TableHead>
+                                            <TableHead className="text-right text-nowrap">
+                                                История
+                                            </TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody className="radius">
+                                        {cars.map((i: any, idx: number) => (
+                                            <TableRow
+                                                key={idx}
+                                                onClick={() => {
+                                                    reset({ autoNumber: i.autoNumber }),
+                                                        setBonus(i.bonus),
+                                                        setSearch(i.autoNumber)
+                                                }}
+                                                className={`border-none cursor-pointer ${search.toLocaleUpperCase() === i.autoNumber ? "bg-[#828486]" : ""}`}
                                             >
-                                                открыть
-                                            </Link>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                                <TableCell className="font-medium text-center rounded-l-lg text-nowrap">
+                                                    {idx + 1}
+                                                </TableCell>
+                                                <TableCell className="font-medium uppercase text-nowrap">
+                                                    {i.autoNumber}
+                                                </TableCell>
+                                                <TableCell className="text-center text-nowrap">
+                                                    {i.batteryPercent}
+                                                </TableCell>
+                                                <TableCell className="text-nowrap">{Math.ceil(i.bonus).toLocaleString("uz")} сум</TableCell>
+                                                <TableCell className="text-nowrap">{i.phoneNumber}</TableCell>
+                                                <TableCell className="text-right text-nowrap">
+                                                    {i.fullName}
+                                                </TableCell>
+                                                <TableCell className="text-right rounded-r-lg text-nowrap">
+                                                    <Link
+                                                        href={`/${i._id}`}
+                                                        type="button"
+                                                        onClick={(e) =>
+                                                            e.stopPropagation()
+                                                        }
+                                                    >
+                                                        открыть
+                                                    </Link>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                        }
                     </ResizablePanel>
                     <ResizableHandle withHandle />
                     <ResizablePanel defaultSize={35} className="h-full rounded-lg ml-4 bg-[#121212]">
@@ -326,7 +371,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                         value={Math.ceil(changePrice)}
                                     />
                                 </div>
-                                <div className="h-fit w-full mt-5">
+                                <div className="h-fit w-full mt-3">
                                     <p>bonus: {Math.ceil(bonus).toLocaleString('uz')}</p>
                                     <div className="grid grid-cols-1 gap-3 h-fit items-center justify-between mt-2">
                                         <Button
@@ -335,7 +380,7 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                                 setPayWithBonus(false)
                                             }
                                             type="submit"
-                                            className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-1"
+                                            className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-2"
                                         >
                                             {Math.ceil(changePrice).toLocaleString("uz")} cум
                                         </Button>
@@ -345,11 +390,10 @@ const Form = ({ token, role, operatorName, config }: any) => {
                                                 setPayWithBonus(true)
                                             }
                                             type="submit"
-                                            className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-2 flex flex-col items-center"
+                                            className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-2 flex items-center justify-around"
                                         >
-                                            <p className="text-center">
-                                                {Math.ceil(nal).toLocaleString("uz")} сум
-                                            </p>
+                                            <p className="block">Оплатить используя бонуса</p>
+                                            <p className="block">{Math.ceil(nal).toLocaleString("uz")} сум</p>
                                         </Button>
                                     </div>
                                 </div>

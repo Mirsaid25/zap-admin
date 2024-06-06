@@ -8,8 +8,8 @@ export async function getData(path: string) {
 
         return data;
     } catch (e) {
-        console.log("get error");
+        console.log();
 
-        return { e }
+        return "get error"
     }
 }
