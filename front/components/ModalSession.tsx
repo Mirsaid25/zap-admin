@@ -3,7 +3,7 @@ import { deleteCookie, getCookie, setCookie } from "cookies-next"
 import { Button } from "./ui/button"
 import { useRouter } from "next/navigation"
 import axios from "axios"
-import action from "@/actions/action"
+import action from "@/app/action"
 
 const ModalSession = ({ setCloseSession }: any) => {
     const { push } = useRouter()

@@ -23,7 +23,6 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
             createdAt: { $gte: createdAt, $lt: updatedAt }
         }
     })
-    console.log(reports?.data?.data);
 
     return (
         <div className="h-screen relative bg-black overflow-auto px-3 py-5 pb-28 text-white">

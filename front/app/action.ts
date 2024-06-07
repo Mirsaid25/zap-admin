@@ -8,8 +8,5 @@ export default async function action(collection: string) {
 }
 
 export async function deleteAllCookies() {
-    cookies().delete("operatorLogin")
-    cookies().delete("createdAt")
-    cookies().delete("updatedAt")
-    cookies().delete("zapAdminToken")
+    
 }

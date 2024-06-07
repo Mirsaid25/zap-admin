@@ -24,6 +24,8 @@ import Link from "next/link";
 import ModalSession from "./ModalSession";
 import ExitModul from "./ExitModul";
 import moment, { now } from "moment";
+import CarsTable from "./CarsTable";
+import FormPanel from "./FormPanel";
 
 type Inputs = {
     autoNumber: string;
@@ -58,12 +60,13 @@ const Form = ({ token, role, operatorName, config, createdAt, operatorLogin }: a
     const [adminExit, setAdminExit] = useState(false);
     const [handleUpdata, setHandleUpdata] = useState(false);
     const [mKub, setMKub] = useState(config.price);
+    const [days, setDays] = useState(config.days);
     const [sessions, setSessions] = useState<any>([]);
-
+    const [settingsPennding, setSettingsPennding] = useState(false);
     const nal = changePrice > bonus ? changePrice - bonus : changePrice;
 
-    const handleClick = () => {
-        console.log(mKub, "kub");
+    const settings = () => {
+        setSettingsPennding(true)
         axios(`${process.env.NEXT_PUBLIC_API_URL}/config/${config._id}`, {
             method: 'PATCH',
             headers: {
@@ -71,8 +74,13 @@ const Form = ({ token, role, operatorName, config, createdAt, operatorLogin }: a
                 'Content-Type': 'application/json',
             },
             data: {
-                price: mKub
+                price: mKub,
+                days: days
             },
+        }).then((res) => {
+            if (res.status === 200 || res.status === 201) {
+                setSettingsPennding(false)
+            }
         })
     }
 
@@ -137,7 +145,6 @@ const Form = ({ token, role, operatorName, config, createdAt, operatorLogin }: a
                 }
             }).then((res) => {
                 if (res.status === 201 || res.status === 200) {
-                    // console.log(res.data);
                     setSessions(res.data.data)
                 }
             })
@@ -145,9 +152,6 @@ const Form = ({ token, role, operatorName, config, createdAt, operatorLogin }: a
             setSessions([])
         }
     }, [search])
-    // console.log(sessions);
-    // console.log(cars);
-    console.log(role);
 
     function changeKubFn(v: number) {
         setChangeKub(v);
@@ -165,7 +169,7 @@ const Form = ({ token, role, operatorName, config, createdAt, operatorLogin }: a
             >
                 <div className="w-full flex items-center justify-between gap-5 pt-9 pb-5 px-4 rounded-lg bg-[#121212]">
                     <p className="text-white">
-                        {role}:{operatorName.value}
+                        {role}: {operatorName.value}
                     </p>
                     <div className="max-w-3xl w-full flex items-center gap-5">
                         <Input
@@ -223,182 +227,35 @@ const Form = ({ token, role, operatorName, config, createdAt, operatorLogin }: a
                     className="mt-3 text-white"
                 >
                     <ResizablePanel className="scroll h-full rounded-lg mr-4 p-5 pt-3 bg-[#121212]">
-                        {
-                            !search.length && role !== "admin" ?
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow className='border-b hover:bg-transparent select-none border-black/20'>
-                                            <TableHead className="w-[100px] text-center">Действие</TableHead>
-                                            <TableHead className="w-[180px]">Номер машины</TableHead>
-                                            <TableHead>Сумма продажи</TableHead>
-                                            <TableHead>Куб</TableHead>
-                                            <TableHead className="text-right">Время продажи</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody className='radius'>
-                                        {
-                                            sessions.map((i: any) => (
-                                                <TableRow key={i.id} className='border-none cursor-pointer'>
-                                                    <TableCell className="font-medium text-center rounded-l-lg">{i.path}</TableCell>
-                                                    <TableCell className="font-medium uppercase">{i.data.autoNumber}</TableCell>
-                                                    <TableCell>{Math.ceil(i.data.price).toLocaleString("uz")}</TableCell>
-                                                    <TableCell>{i.data.volume}</TableCell>
-                                                    <TableCell className="text-right flex justify-end gap-2">
-                                                        <p>{moment(i.createdAt).format('DD.MM.YY')}</p>
-                                                        <p>{moment(i.createdAt).format('HH:mm')}</p>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))
-                                        }
-                                    </TableBody>
-                                </Table> :
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow className="border-b hover:bg-transparent select-none border-white/20">
-                                            <TableHead className="w-[20px] text-center text-nowrap">
-                                                №
-                                            </TableHead>
-                                            <TableHead className="w-[150px] text-nowrap">
-                                                Номер машины
-                                            </TableHead>
-                                            <TableHead className="text-center text-nowrap">Status</TableHead>
-                                            <TableHead className="text-nowrap">Сумма бонуса</TableHead>
-                                            <TableHead className="text-nowrap">Номер</TableHead>
-                                            <TableHead className="text-right text-nowrap">
-                                                Имя
-                                            </TableHead>
-                                            <TableHead className="text-right text-nowrap">
-                                                История
-                                            </TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody className="radius">
-                                        {cars.map((i: any, idx: number) => (
-                                            <TableRow
-                                                key={idx}
-                                                onClick={() => {
-                                                    reset({ autoNumber: i.autoNumber }),
-                                                        setBonus(i.bonus),
-                                                        setSearch(i.autoNumber)
-                                                }}
-                                                className={`border-none cursor-pointer ${search.toLocaleUpperCase() === i.autoNumber ? "bg-[#828486]" : ""}`}
-                                            >
-                                                <TableCell className="font-medium text-center rounded-l-lg text-nowrap">
-                                                    {idx + 1}
-                                                </TableCell>
-                                                <TableCell className="font-medium uppercase text-nowrap">
-                                                    {i.autoNumber}
-                                                </TableCell>
-                                                <TableCell className="text-center text-nowrap">
-                                                    {i.batteryPercent}
-                                                </TableCell>
-                                                <TableCell className="text-nowrap">{Math.ceil(i.bonus).toLocaleString("uz")} сум</TableCell>
-                                                <TableCell className="text-nowrap">{i.phoneNumber}</TableCell>
-                                                <TableCell className="text-right text-nowrap">
-                                                    {i.fullName}
-                                                </TableCell>
-                                                <TableCell className="text-right rounded-r-lg text-nowrap">
-                                                    <Link
-                                                        href={`/${i._id}`}
-                                                        type="button"
-                                                        onClick={(e) =>
-                                                            e.stopPropagation()
-                                                        }
-                                                    >
-                                                        открыть
-                                                    </Link>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                        }
+                        <CarsTable
+                            search={search}
+                            role={role}
+                            reset={reset}
+                            cars={cars}
+                            setBonus={setBonus}
+                            setSearch={setSearch}
+                            sessions={sessions}
+                        />
                     </ResizablePanel>
                     <ResizableHandle withHandle />
-                    <ResizablePanel defaultSize={35} className="h-full rounded-lg ml-4 bg-[#121212]">
-                        <div className="h-full p-5">
-                            <div className="flex flex-col">
-                                <div className="flex flex-col gap-2">
-                                    <Input
-                                        type="number"
-                                        onKeyUpCapture={(e: any) =>
-                                            changeKubFn(+e.target.value)
-                                        }
-                                        {...register("volume", {
-                                            required: true,
-                                        })}
-                                        className={`w-full h-full text-2xl px-5 bg-[#242424] text-white ${errors.price &&
-                                            "border-[red] outline-[red]"
-                                            }`}
-                                        placeholder="Kub"
-                                        disabled={isPending}
-                                        defaultValue={changeKub}
-                                    />
-
-                                    <div className="relative">
-                                        {
-                                            role === "admin" ?
-                                                <Input
-                                                    className="w-full h-full text-2xl px-5 bg-[#242424] text-white"
-                                                    type="text"
-                                                    onChange={(e) => setMKub(+e.target.value)}
-                                                    defaultValue={config.price}
-                                                    placeholder="Sum"
-                                                />
-                                                :
-                                                <Input
-                                                    className="w-full h-full text-2xl px-5 bg-[#242424] text-white"
-                                                    type="text"
-                                                    value={config.price}
-                                                    placeholder="Sum"
-                                                />
-                                        }
-                                        {
-                                            role === "admin" ?
-                                                <Button onClick={handleClick} type="button" className="absolute top-[3px] right-1 text-sm py-0.5 px-2 bg-green-700 hover:bg-green-600">Сохранить</Button>
-                                                : null
-                                        }
-                                    </div>
-
-                                    <Input
-                                        className="w-full h-full text-2xl px-5 bg-[#242424] text-white"
-                                        type="number"
-                                        disabled={isPending}
-                                        {...register("price", {
-                                            required: true,
-                                        })}
-                                        placeholder="Sum"
-                                        value={Math.ceil(changePrice)}
-                                    />
-                                </div>
-                                <div className="h-fit w-full mt-3">
-                                    <p>bonus: {Math.ceil(bonus).toLocaleString('uz')}</p>
-                                    <div className="grid grid-cols-1 gap-3 h-fit items-center justify-between mt-2">
-                                        <Button
-                                            disabled={isPending}
-                                            onClick={() =>
-                                                setPayWithBonus(false)
-                                            }
-                                            type="submit"
-                                            className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-2"
-                                        >
-                                            {Math.ceil(changePrice).toLocaleString("uz")} cум
-                                        </Button>
-                                        <Button
-                                            disabled={isPending || bonus == 0}
-                                            onClick={() =>
-                                                setPayWithBonus(true)
-                                            }
-                                            type="submit"
-                                            className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-2 flex items-center justify-around"
-                                        >
-                                            <p className="block">Оплатить используя бонуса</p>
-                                            <p className="block">{Math.ceil(nal).toLocaleString("uz")} сум</p>
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <ResizablePanel defaultSize={35} className="h-full ml-4">
+                        <FormPanel
+                            nal={nal}
+                            role={role}
+                            setDays={setDays}
+                            setMKub={setMKub}
+                            config={config}
+                            settings={settings}
+                            settingsPennding={settingsPennding}
+                            changeKubFn={changeKubFn}
+                            errors={errors}
+                            register={register}
+                            isPending={isPending}
+                            changeKub={changeKub}
+                            changePrice={changePrice}
+                            bonus={bonus}
+                            setPayWithBonus={setPayWithBonus}
+                        />
                     </ResizablePanel>
                 </ResizablePanelGroup>
             </form>
