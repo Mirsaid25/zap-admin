@@ -13,14 +13,13 @@ import Link from "next/link"
 type Props = {
     search: any
     role: any
-    reset: any
     cars: any
     setBonus: any
     setSearch: any
     sessions: any
 }
 
-const CarsTable = ({ cars, sessions, search, role, reset, setBonus, setSearch }: Props) => {
+const CarsTable = ({ cars, sessions, search, role, setBonus, setSearch }: Props) => {
     return (
         <>
             {
@@ -77,10 +76,9 @@ const CarsTable = ({ cars, sessions, search, role, reset, setBonus, setSearch }:
                             {cars.map((i: any, idx: number) => (
                                 <TableRow
                                     key={idx}
-                                    onClick={() => {
-                                        reset({ autoNumber: i.autoNumber }),
-                                            setBonus(i.bonus),
-                                            setSearch(i.autoNumber)
+                                    onClick={() => { 
+                                        setBonus(i.bonus) 
+                                        setSearch(i.autoNumber) 
                                     }}
                                     className={`border-none cursor-pointer ${search.toLocaleUpperCase() === i.autoNumber ? "bg-[#828486]" : ""}`}
                                 >
