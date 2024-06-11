@@ -88,6 +88,7 @@ const FormPanel = ({ token, setSearch, role, config, setIsPending, search, isPen
                         type="text"
                         value={config.price}
                         placeholder="Sum"
+                        onChange={() => { }}
                     />
 
                     <Input

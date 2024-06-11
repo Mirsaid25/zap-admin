@@ -74,6 +74,7 @@ const Modal = ({ setOpenModal, token, search }: any) => {
             }
         }).then((res) => {
             if (res.status === 200 || res.status === 201) {
+                console.log(res.data);
                 form.reset({
                     autoNumber: "",
                     fullName: "",

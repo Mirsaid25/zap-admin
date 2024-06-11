@@ -19,7 +19,6 @@ const Search = ({ token, cars, role, operatorName, isPending, search, setSearch,
         register,
         handleSubmit,
         reset,
-        watch,
         formState: { errors },
     } = useForm<Inputs>()
     const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data)
