@@ -22,12 +22,12 @@ const Operator = ({ operator, token }: { operator: any, token: string }) => {
 
             <div className="flex items-center justify-between mt-4">
                 <div className="flex items-center gap-2">
-                    <p className='text-base text-gray-500'>от {moment(operator.createdAt).format('MM.HH.DD')}</p>
-                    <p className='text-base text-gray-500'>{moment(operator.createdAt).format('MM.YY')}</p>
+                    <p className='text-base text-gray-500'>от {moment(operator.createdAt).format('DD.MM.YY')}</p>
+                    <p className='text-base text-gray-500'>{moment(operator.createdAt).format('HH:mm')}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <p className='text-base text-gray-500'>до {moment(operator.updatedAt).format('MM.HH.DD')}</p>
-                    <p className='text-base text-gray-500'>{moment(operator.updatedAt).format('MM.YY')}</p>
+                    <p className='text-base text-gray-500'>до {moment(operator.updatedAt).format('DD.MM.YY')}</p>
+                    <p className='text-base text-gray-500'>{moment(operator.updatedAt).format('HH:mm')}</p>
                 </div>
             </div>
         </div>

@@ -22,7 +22,7 @@ const formSchema = z.object({
 });
 
 
-const FormPanel = ({ token, setSearch, role, config, setIsPending, search, isPending, changeKub, bonus, setChangeKub, setBonus, setHandleUpdata, handleUpdata }: any) => {
+const FormPanel = ({ token, typeCar, setSearch, role, config, setIsPending, search, isPending, changeKub, bonus, setChangeKub, setBonus, setHandleUpdata, handleUpdata }: any) => {
     const [payWithBonus, setPayWithBonus] = useState(false);
     const [changePrice, setChangePrice] = useState(0);
     const {
@@ -39,9 +39,9 @@ const FormPanel = ({ token, setSearch, role, config, setIsPending, search, isPen
             ...data,
             autoNumber: search.toUpperCase(),
             column: 1,
-            type: 2,
+            type: typeCar,
+            isTaxi: typeCar !== 0,
             price: changePrice,
-            isTaxi: data.isTaxi === "1",
             useBonus: payWithBonus,
         };
 
@@ -127,40 +127,6 @@ const FormPanel = ({ token, setSearch, role, config, setIsPending, search, isPen
             </form>
             {
                 role === "admin" && (
-                    // <form className="h-full mt-5 p-5 rounded-lg bg-[#121212]">
-                    //     <div className="flex flex-col gap-4">
-                    //         <h2 className="text-2xl font-medium">Настройки</h2>
-                    //         <label>
-                    //             <p className="text-lg mb-1">День</p>
-                    //             <Input
-                    //                 type="number"
-                    //                 // onChange={(e) => setDays(+e.target.value)}
-                    //                 defaultValue={config.days}
-                    //                 className="w-full h-full text-2xl px-5 bg-[#242424] text-white"
-                    //                 {...register("days", {
-                    //                     required: true,
-                    //                 })}
-                    //             />
-                    //         </label>
-                    //         <label className="">
-                    //             <p className="text-lg mb-1">М Куб</p>
-                    //             <Input
-                    //                 type="number"
-                    //                 // onChange={(e) => setMKub(+e.target.value)}
-                    //                 defaultValue={config.price}
-                    //                 className="w-full h-full text-2xl px-5 bg-[#242424] text-white"
-                    //                 {...register("price", {
-                    //                     required: true,
-                    //                 })}
-                    //             />
-                    //         </label>
-                    //         <Button className="bg-green-700 hover:bg-green-600 w-full text-lg h-full py-2">
-                    //             {
-                    //                 settingsPennding ? <div className="w-7 h-7 rounded-full border-t-2 border-b-2 animate-spin"></div> : "Сохранить"
-                    //             }
-                    //         </Button>
-                    //     </div>
-                    // </form>
                     <Settings token={token} config={config} />
                 )
             }

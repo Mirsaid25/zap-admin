@@ -34,6 +34,7 @@ const Form = ({ token, role, operatorName, config, createdAt, operatorLogin }: a
     const [changeKub, setChangeKub] = useState<number>();
     const [closeSession, setCloseSession] = useState(false);
     const [handleUpdata, setHandleUpdata] = useState(false);
+    const [typeCar, setTypeCar] = useState();
 
     useEffect(() => {
         axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cars`, {
@@ -52,7 +53,7 @@ const Form = ({ token, role, operatorName, config, createdAt, operatorLogin }: a
             }
         });
     }, [search, handleUpdata]);
-    
+
     useEffect(() => {
         const updatedAt = new Date().toISOString();
         if (role !== "admin") {
@@ -90,6 +91,7 @@ const Form = ({ token, role, operatorName, config, createdAt, operatorLogin }: a
                 >
                     <ResizablePanel className="scroll h-full rounded-lg mr-4 p-5 pt-3 bg-[#121212]">
                         <CarsTable
+                            setTypeCar={setTypeCar}
                             search={search}
                             role={role}
                             cars={cars}
@@ -101,6 +103,7 @@ const Form = ({ token, role, operatorName, config, createdAt, operatorLogin }: a
                     <ResizableHandle withHandle />
                     <ResizablePanel defaultSize={35} className="h-full ml-4">
                         <FormPanel
+                            typeCar={typeCar}
                             search={search}
                             token={token}
                             setSearch={setSearch}

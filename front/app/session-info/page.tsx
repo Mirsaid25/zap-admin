@@ -6,6 +6,7 @@ import { redirect } from "next/navigation"
 import { useEffect, useState } from "react"
 import { deleteCookie, getCookie } from "cookies-next"
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
 
 const Page = () => {
     const [result, setResult] = useState()
@@ -38,6 +39,9 @@ const Page = () => {
         <div className='h-screen w-full z-50'>
             <div className="w-full px-8 py-9 rounded-lg">
                 <SesionInfoChild res={result} />
+            </div>
+            <div className="flex justify-end px-10">
+                <Button className="text-2xl" onClick={() => push("/log-in")}>←</Button>
             </div>
         </div>
     )

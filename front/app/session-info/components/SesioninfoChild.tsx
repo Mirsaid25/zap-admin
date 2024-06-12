@@ -11,14 +11,12 @@ interface SesionInfoChildProps {
 }
 
 const SesionInfoChild: React.FunctionComponent<SesionInfoChildProps> = ({ res }) => {
-
-  useEffect(() => {
+    useEffect(() => {
         deleteCookie("operatorLogin")
         deleteCookie("createdAt")
         deleteCookie("updatedAt")
         deleteCookie("zapAdminToken")
-  }, []);
-    
+    }, []);
 
     return (
         <Table>
@@ -33,12 +31,12 @@ const SesionInfoChild: React.FunctionComponent<SesionInfoChildProps> = ({ res })
             </TableHeader>
             <TableBody className='radius'>
                 {
-                    res && 
-                    res.data.map((i: any) => (
-                        <TableRow key={i.id} className='border-none cursor-pointer'>
+                    res &&
+                    res.data.map((i: any, idx: number) => (
+                        <TableRow key={idx} className='border-none cursor-pointer'>
                             <TableCell className="font-medium text-center rounded-l-lg">{i.path}</TableCell>
                             <TableCell className="font-medium uppercase">{i.data.autoNumber}</TableCell>
-                            <TableCell>{Math.ceil(i.data.price).toLocaleString("uz")}</TableCell>
+                            <TableCell>{i.data.price ? Math.ceil(i.data.price).toLocaleString("uz") : ""}</TableCell>
                             <TableCell>{i.data.volume}</TableCell>
                             <TableCell className="text-right flex justify-end gap-2">
                                 <p>{moment(i.createdAt).format('DD.MM.YY')}</p>

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table"
 import moment from "moment"
 import Link from "next/link"
+import { useParams, useSearchParams } from "next/navigation"
 
 type Props = {
     search: any
@@ -17,9 +18,10 @@ type Props = {
     setBonus: any
     setSearch: any
     sessions: any
+    setTypeCar: any
 }
 
-const CarsTable = ({ cars, sessions, search, role, setBonus, setSearch }: Props) => {
+const CarsTable = ({ cars, sessions, search, role, setBonus, setSearch, setTypeCar }: Props) => {
     return (
         <>
             {
@@ -32,19 +34,23 @@ const CarsTable = ({ cars, sessions, search, role, setBonus, setSearch }: Props)
                                 <TableHead>Сумма продажи</TableHead>
                                 <TableHead>Куб</TableHead>
                                 <TableHead className="text-right">Время продажи</TableHead>
+                                <TableHead className="text-right">История</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody className='radius'>
                             {
                                 sessions.map((i: any) => (
-                                    <TableRow key={i.id} className='border-none cursor-pointer'>
+                                    <TableRow key={i.id} className='border-none cursor-pointer rounded-l-lg'>
                                         <TableCell className="font-medium text-center rounded-l-lg">{i.path}</TableCell>
                                         <TableCell className="font-medium uppercase">{i.data.autoNumber}</TableCell>
-                                        <TableCell>{Math.ceil(i.data.price).toLocaleString("uz")}</TableCell>
+                                        <TableCell>{i.data.price ? Math.ceil(i.data.price).toLocaleString("uz") : ""}</TableCell>
                                         <TableCell>{i.data.volume}</TableCell>
-                                        <TableCell className="text-right flex justify-end gap-2">
+                                        <TableCell className="flex justify-end gap-2">
                                             <p>{moment(i.createdAt).format('DD.MM.YY')}</p>
                                             <p>{moment(i.createdAt).format('HH:mm')}</p>
+                                        </TableCell>
+                                        <TableCell className="text-right rounded-r-lg">
+                                            <Link href={`/${i.data.autoNumber}`}>открыть</Link>
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -76,9 +82,10 @@ const CarsTable = ({ cars, sessions, search, role, setBonus, setSearch }: Props)
                             {cars.map((i: any, idx: number) => (
                                 <TableRow
                                     key={idx}
-                                    onClick={() => { 
-                                        setBonus(i.bonus) 
-                                        setSearch(i.autoNumber) 
+                                    onClick={() => {
+                                        setBonus(i.bonus)
+                                        setSearch(i.autoNumber)
+                                        setTypeCar(i.type)
                                     }}
                                     className={`border-none cursor-pointer ${search.toLocaleUpperCase() === i.autoNumber ? "bg-[#828486]" : ""}`}
                                 >
@@ -98,11 +105,9 @@ const CarsTable = ({ cars, sessions, search, role, setBonus, setSearch }: Props)
                                     </TableCell>
                                     <TableCell className="text-right rounded-r-lg text-nowrap">
                                         <Link
-                                            href={`/${i._id}`}
+                                            href={`/${i.autoNumber}`}
                                             type="button"
-                                            onClick={(e) =>
-                                                e.stopPropagation()
-                                            }
+                                            onClick={(e) => e.stopPropagation()}
                                         >
                                             открыть
                                         </Link>

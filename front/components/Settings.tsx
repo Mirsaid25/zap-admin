@@ -23,7 +23,7 @@ const formSettings = z.object({
     thirdValue: z.any(),
 });
 
-const Settings = ({ config, token }: any) => {
+const Settings = ({ config, token }: any) => {    
     const [settingsPennding, setSettingsPennding] = useState(false);
     const {
         register,

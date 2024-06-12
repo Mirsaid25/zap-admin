@@ -32,7 +32,6 @@ const Login: React.FC = () => {
         setISpandding(true)
         axios.post(`${process.env.NEXT_PUBLIC_API_URL}/authentication/${role}`, { ...data, strategy: 'local' })
             .then((res) => {
-                console.log(res);
                 if (res.status === 200 || res.status === 201) {
                     if (res.data.admin) {
                         setCookie('zapAdminToken', res.data.accessToken);
@@ -47,7 +46,6 @@ const Login: React.FC = () => {
                                 Authorization: res.data.accessToken
                             }
                         }).then(response => {
-                            console.log(response.data, "dedede");
                             if (response.status === 200 || response.status === 201) {
                                 setCookie("sessionId", response.data._id)
                                 setCookie("operatorLogin", response.data.operator.login)

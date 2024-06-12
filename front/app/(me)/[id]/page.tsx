@@ -1,15 +1,24 @@
-// "use client"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import axios from "axios"
 import { cookies } from "next/headers";
 import moment from 'moment';
 import { getData } from "@/lib/https";
+import ChangeTypeCar from "@/components/ChangeTypeCar";
 
 const page = async ({ params: { id } }: { params: { id: string } }) => {
     const token = cookies().get("userToken")?.value
     const config = await getData("/config")
-    const car: any = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cars/${id}`, { headers: { Authorization: token } })
-    console.log(car.data);
+    const car = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cars`, {
+        headers: {
+            Authorization: token,
+        },
+        params: {
+            autoNumber: {
+                $regex: id,
+                $options: "i",
+            },
+        },
+    })
 
     return (
         <div className="w-full min-h-screen px-3 pt-5 text-white bg-black">
@@ -24,12 +33,14 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                     </TableRow>
                 </TableHeader>
                 <TableBody className='radius'>
-                    <TableRow className='border-none cursor-pointer'>
-                        <TableCell className="font-medium uppercase rounded-l-lg">{car.data.autoNumber}</TableCell>
-                        <TableCell>{car.data.batteryPercent}</TableCell>
-                        <TableCell>{car.data.bonus.toLocaleString("uz")}</TableCell>
-                        <TableCell>{car.data.phoneNumber}</TableCell>
-                        <TableCell className="text-right rounded-r-lg">{car.data.fullName}</TableCell>
+                    <TableRow className='border-none hover:bg-transparent'>
+                        <TableCell className="font-medium uppercase rounded-l-lg">{car.data.data[0].autoNumber}</TableCell>
+                        <TableCell>
+                            <ChangeTypeCar type={car.data.data[0].type} token={token} id={car.data.data[0]._id} />
+                        </TableCell>
+                        <TableCell>{car.data.data[0].bonus.toLocaleString("uz")}</TableCell>
+                        <TableCell>{car.data.data[0].phoneNumber}</TableCell>
+                        <TableCell className="text-right rounded-r-lg">{car.data.data[0].fullName}</TableCell>
                     </TableRow>
                 </TableBody>
             </Table>
@@ -49,9 +60,9 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                 </TableHeader>
                 <TableBody className='radius'>
                     {
-                        car.data.history.map((el: any) => (
+                        car.data.data[0].history.reverse().map((el: any) => (
                             <TableRow key={el._id} className='border-none cursor-pointer'>
-                                <TableCell className="font-medium rounded-l-lg">{moment(car.data.history.createdAt).format('DD.MM.YY')}</TableCell>
+                                <TableCell className="font-medium rounded-l-lg">{moment(el.createdAt).format('DD.MM.YY')}</TableCell>
                                 <TableCell>{el.volume}</TableCell>
                                 <TableCell>{el.volumePrice.toLocaleString("uz")}</TableCell>
                                 <TableCell>{el.price.toLocaleString("uz")}</TableCell>

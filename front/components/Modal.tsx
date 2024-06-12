@@ -74,7 +74,6 @@ const Modal = ({ setOpenModal, token, search }: any) => {
             }
         }).then((res) => {
             if (res.status === 200 || res.status === 201) {
-                console.log(res.data);
                 form.reset({
                     autoNumber: "",
                     fullName: "",
@@ -135,7 +134,6 @@ const Modal = ({ setOpenModal, token, search }: any) => {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
-                                        {/* <Input placeholder="Номер телефона"  /> */}
                                         <InputMask
                                             autoComplete='off'
                                             className='w-full py-2 px-2 text-base border rounded-md'

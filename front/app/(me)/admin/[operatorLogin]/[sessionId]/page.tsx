@@ -7,8 +7,9 @@ import React from 'react'
 function handler(arr: any, key: string) {
     let all = 0
     for (let i = 0; i < arr.length; i++) {
-        // console.log(arr[i].data[key]);
-        all += +arr[i].data[key];
+        if (+arr[i].data[key]) {
+            all += +arr[i].data[key];
+        }
     }
 
     return Math.ceil(all).toLocaleString("uz")
@@ -44,7 +45,7 @@ const page = async ({ params: { operatorLogin }, searchParams: { createdAt, upda
                             <TableRow key={i.id} className='border-none cursor-pointer'>
                                 <TableCell className="rounded-l-lg">{i?.data?.volume}</TableCell>
                                 <TableCell className='uppercase'>{i?.data?.autoNumber}</TableCell>
-                                <TableCell>{Math.ceil(i?.data?.price).toLocaleString("uz")}</TableCell>
+                                <TableCell>{i?.data?.price ? Math.ceil(i?.data?.price).toLocaleString("uz") : ""}</TableCell>
                                 <TableCell className='flex gap-2'>
                                     <p>{moment(i?.createdAt).format('DD.MM.YY')}</p>
                                     <p>{moment(i?.createdAt).format('hh:mm')}</p>

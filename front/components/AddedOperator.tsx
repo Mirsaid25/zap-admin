@@ -35,7 +35,6 @@ const AddedOperator = ({ token }: { token: string }) => {
             }
         }).then((res) => {
             if (res.status === 200 || res.status === 201) {
-                console.log(res.data);
                 setIsOpen(false)
             }
         }).catch(err => {
