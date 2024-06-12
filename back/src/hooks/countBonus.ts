@@ -23,7 +23,9 @@ export default function () {
             autoNumber: context.data.autoNumber
         });
 
-        const sumVolume = purchases.data.reduce((acc: number, curr: any) => acc + +curr.volume, 0);
+        const start = +data.volume;
+
+        const sumVolume = purchases.data.reduce((acc: number, curr: any) => acc + +curr.volume, start);
 
         let bonus = 0;
 
@@ -38,7 +40,7 @@ export default function () {
             price: data.price,
             column: data.column,
             bonusPrice: cars.bonus + price,
-            allVolume: sumVolume + data.volume,
+            allVolume: +sumVolume + +data.volume,
             bonusPricePerPurchase: price,
             bonusPercent: bonus,
             volumePrice: config.data[0].price
