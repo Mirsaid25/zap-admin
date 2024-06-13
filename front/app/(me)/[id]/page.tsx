@@ -19,6 +19,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
             },
         },
     })
+    console.log(car.data.data);
 
     return (
         <div className="w-full min-h-screen px-3 pt-5 text-white bg-black">
@@ -48,14 +49,15 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
             <Table className="mt-10">
                 <TableHeader>
                     <TableRow className='border-b hover:bg-transparent select-none border-white/20'>
-                        <TableHead className="w-[180px]">Дата</TableHead>
-                        <TableHead>Метр куб</TableHead>
-                        <TableHead>Цена</TableHead>
-                        <TableHead>Сумма</TableHead>
-                        <TableHead>Размер бонуса %</TableHead>
-                        <TableHead>Сумма бонуса</TableHead>
-                        <TableHead>Общие бонусы</TableHead>
-                        <TableHead className="text-right">Покупка за последние {config.data[0].days} дней</TableHead>
+                        <TableHead className="text-nowrap w-[180px]">Дата</TableHead>
+                        <TableHead className="text-nowrap">Метр куб</TableHead>
+                        <TableHead className="text-nowrap">Цена</TableHead>
+                        <TableHead className="text-nowrap">Сумма</TableHead>
+                        <TableHead className="text-nowrap">Размер бонуса %</TableHead>
+                        <TableHead className="text-nowrap">Сумма бонуса</TableHead>
+                        <TableHead className="text-nowrap">Общие бонусы</TableHead>
+                        <TableHead className="text-nowrap">Уровень</TableHead>
+                        <TableHead className="text-nowrap text-right">Покупка за последние {config.data[0].days} дней</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody className='radius'>
@@ -69,6 +71,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                                 <TableCell>{el.bonusPercent.toLocaleString("uz")}</TableCell>
                                 <TableCell>{el.bonusPricePerPurchase.toLocaleString("uz")}</TableCell>
                                 <TableCell>{el.bonusPrice.toLocaleString("uz")}</TableCell>
+                                <TableCell>{el.bonusPercent == 5 ? "Золото" : el.bonusPercent == 3 ? "Серебро" : "Бронза"}</TableCell>
                                 <TableCell className="text-right rounded-r-lg">{el.allVolume}</TableCell>
                             </TableRow>
                         ))

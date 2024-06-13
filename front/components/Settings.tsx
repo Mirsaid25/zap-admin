@@ -23,7 +23,7 @@ const formSettings = z.object({
     thirdValue: z.any(),
 });
 
-const Settings = ({ config, token }: any) => {    
+const Settings = ({ config, token }: any) => {
     const [settingsPennding, setSettingsPennding] = useState(false);
     const {
         register,
@@ -92,7 +92,7 @@ const Settings = ({ config, token }: any) => {
                     </div>
                     <div className="w-full flex flex-col">
                         <label htmlFor="value1" className='w-full'>
-                            <p className="text-lg mb-1">Працент</p>
+                            <p className="text-lg mb-1">Процент</p>
                         </label>
                         <Input
                             id='value1'
@@ -122,7 +122,7 @@ const Settings = ({ config, token }: any) => {
                     </div>
                     <div className="w-full flex flex-col">
                         <label htmlFor="value1" className='w-full'>
-                            <p className="text-lg mb-1">Працент</p>
+                            <p className="text-lg mb-1">Процент</p>
                         </label>
                         <Input
                             id='value1'
@@ -152,7 +152,7 @@ const Settings = ({ config, token }: any) => {
                     </div>
                     <div className="w-full flex flex-col">
                         <label htmlFor="value1" className='w-full'>
-                            <p className="text-lg mb-1">Працент</p>
+                            <p className="text-lg mb-1">Процент</p>
                         </label>
                         <Input
                             id='value1'
