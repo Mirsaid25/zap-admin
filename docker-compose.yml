@@ -1,0 +1,74 @@
+version: '3.7'
+
+services:
+    app:
+        container_name: app
+        restart: always
+        build:
+            context: ./front
+            dockerfile: Dockerfile
+        networks:
+            - dropin
+        environment:
+            NEXT_PUBLIC_API_URL: http://${DOMAIN}/api
+            API_URL: http://api:${PORT}/api
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.app.entrypoints=websecure"
+            - "traefik.http.routers.app.rule=Host(`${DOMAIN}`) && PathPrefix(`/`)"
+
+        depends_on:
+            - traefik
+            - api
+
+    traefik:
+        image: traefik:v2.9
+        command:
+            - "--api.insecure=true"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--entryPoints.websecure.address=:443"
+
+        networks:
+            - dropin
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ../volumes/letsencrypt:/letsencrypt
+            - /var/run/docker.sock:/var/run/docker.sock
+
+
+    api:
+        container_name: api
+        restart: always
+        networks:
+            - dropin
+        build:
+            context: ./back
+            dockerfile: Dockerfile
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.api.entrypoints=websecure"
+            - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
+            - "traefik.http.services.api.loadbalancer.server.port=${PORT}"
+        depends_on:
+            - mongo
+            - traefik
+
+    mongo:
+        container_name: mongo
+        image: mongo:6-jammy
+        ports:
+            - '27017:27017'
+        volumes:
+            - dbdata:/data/db
+        networks:
+            - dropin
+
+networks:
+    dropin:
+        driver: bridge
+
+volumes:
+    dbdata:

@@ -36,11 +36,11 @@ export default function () {
         const price = data.price / 100 * bonus;
 
         const history = {
-            volume: data.volume,
+            volume: +data.volume,
             price: data.price,
             column: data.column,
             bonusPrice: cars.bonus + price,
-            allVolume: +sumVolume + +data.volume,
+            allVolume: +sumVolume,
             bonusPricePerPurchase: price,
             bonusPercent: bonus,
             volumePrice: config.data[0].price
